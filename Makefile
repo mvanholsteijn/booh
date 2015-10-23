@@ -17,20 +17,20 @@ bump-patch: VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1,2); \
 		patch=$$(echo $$version | cut -d. -f3);  \
 		version=$$(printf "%s.%d" $$major $$(($$patch + 1))) ; echo $$version )
-bump-patch:
+bump-patch: tag
 	echo $(VERSION)
 
 bump-minor:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		minor=$$(echo $$version | cut -d. -f2); \
 		version=$$(printf "%d.%d.0" $$major $$(($$minor + 1))) ; echo $$version )
-bump-minor:
+bump-minor: tag
 	echo $(VERSION)
 
 bump-major:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		version=$$(printf "%d.0.0" $$(($$major + 1))) ; echo $$version )
-bump-major:
+bump-major: tag
 	echo $(VERSION)
 
 tag: check-status
