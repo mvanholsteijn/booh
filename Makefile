@@ -13,23 +13,25 @@ build:
 display:
 	echo $(VERSION)
 
-bump-patch: 
-override VERSION = $(shell version=$$(<.release); \
+bump-patch: VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1,2); \
 		patch=$$(echo $$version | cut -d. -f3);  \
 		version=$$(printf "%s.%d" $$major $$(($$patch + 1))) ; echo $$version )
+bump-patch:
 	echo $(VERSION)
 
-bump-minor:  
-override VERSION = $(shell version=$$(<.release); \
+bump-minor:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		minor=$$(echo $$version | cut -d. -f2); \
 		version=$$(printf "%d.%d.0" $$major $$(($$minor + 1))) ; echo $$version )
+bump-minor:
+	echo $(VERSION)
 
-bump-major:  
-override VERSION = $(shell version=$$(<.release); \
+bump-major:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		version=$$(printf "%d.0.0" $$(($$major + 1))) ; echo $$version )
+bump-major:
+	echo $(VERSION)
 
 tag: check-status
 	echo $(VERSION)
