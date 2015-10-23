@@ -1,0 +1,17 @@
+#!/bin/bash
+
+version=$(<.release)
+major=$(echo $version | cut -d. -f1)
+minor=$(echo $version | cut -d. -f2)
+patch=$(echo $version | cut -d. -f3)
+
+case "$1" in
+	major) major=$(( $major + 1 )); minor=0; patch=0 ;;
+	minor) minor=$(( $minor + 1 )); patch=0 ;;
+	patch) patch=$(( $patch + 1 )) ;;
+	*) echo "Usage: $(basename $0) major|minor|patch"; exit 1 ;;
+esac
+new_version=$(printf "%d.%d.%d" $major $minor $patch)
+echo $new_version > .release
+git add ./.release
+#git commit -m "Incremented version to $new_version"
