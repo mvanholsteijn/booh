@@ -2,7 +2,7 @@ NAME=$(shell basename $(PWD))
 IMAGE=mvanholsteijn/$(NAME)
 BRANCH=$(shell git branch  | sed -n -e 's/^\* //p')
 
-VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep '^$$(<.release)\$$')" -a  -z "$$(git diff --summary -r $$(<.release))" ] && cat .release ||  $$(git describe --tag --long))
+VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep '^$$(<.release)\$$')" -a  -z "$$(git diff --shortstat -r $$(<.release))" ] && cat .release ||  $$(git describe --tag --long))
 
 
 build: 
@@ -48,8 +48,8 @@ check-status:
 
 
 check-release: 
-	@[ -n $$(git tag | grep '^$$(<.release)\$$') ] || (echo "$$(<.release) not yet tagged." ; exit 1) 
-	@[ -n $$(git diff --summary -r $$(<.release)) ] || (echo "current directory differs from tagged $$(<.release)" ; exit 1) 
+	@[ -n "$$(git tag | grep '^$$(<.release)\$$')" ] || (echo "$$(<.release) not yet tagged." ; exit 1) 
+	@[ -n "$$(git diff --shortstat -r $$(<.release))" ] || (echo "current directory differs from tagged $$(<.release)" ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
