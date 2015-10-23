@@ -2,7 +2,7 @@ NAME=$(shell basename $(PWD))
 IMAGE=mvanholsteijn/$(NAME)
 BRANCH=$(shell git branch  | sed -n -e 's/^\* //p')
 
-VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep '^$$(<.release)\$$')" -a  -z "$$(git diff --shortstat -r $$(<.release))" ] && cat .release ||  $$(git describe --tag --long))
+VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep "^$$(<.release)\$$")" -a  -z "$$(git diff --shortstat -r $$(<.release))" ] && cat .release ||  $$(git describe --tag --long))
 
 
 build: 
