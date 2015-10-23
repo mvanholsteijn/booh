@@ -34,7 +34,7 @@ release-major: tag
 	echo INFO: release $(VERSION) tagged.
 
 tag: check-status
-	[ -n $$(git tag | grep '^$(VERSION)$$') ] && echo boo && (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
+	[ -z $$(git tag | grep '^$(VERSION)$$') ] || (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
 	echo $(VERSION) > .release ;  
 	git add .release ; 
 	exit 1
