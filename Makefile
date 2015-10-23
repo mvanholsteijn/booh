@@ -33,10 +33,9 @@ check-status:
 	@. ../.make_support ; ! hasChanges || (echo "ERROR: there are still outstanding changes" >&2 && exit 1) ; 
 
 check-release: 
-	. ../.make_support ; ! tagExists || (echo "ERROR: version $(VERSION) not yet tagged in git" >&2 && exit 1) ; 
-	. ../.make_support ; ! differsFromRelease || (echo "ERROR: ERROR: current directory differs from tagged $$(<.release). make release-[minor,major,patch]." ; exit 1) 
+	. ../.make_support ; tagExists || (echo "ERROR: version not yet tagged in git" >&2 && exit 1) ; 
+	. ../.make_support ; ! differsFromRelease || (echo "ERROR: current directory differs from tagged $$(<.release). make release-[minor,major,patch]." ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
 	echo docker push $(IMAGE):$(VERSION)
-
