@@ -43,7 +43,7 @@ tag: check-status
 	git push origin $(BRANCH) --follow-tags 
 
 check-status:
-	@[ -z "$$(git status -s)" ] || (echo "ERROR: outstanding changes" ; git status -s && exit 1)
+	[ -z "$$(git status -s)" ] || (echo "ERROR: outstanding changes" ; git status -s && exit 1)
 
 check-release: 
 	@[ -n $$(git tag | grep '^$$(<.release)\$$') ] || (echo "ERROR: $$(<.release) not yet tagged. make release-[minor,major,patch]." ; exit 1) 
