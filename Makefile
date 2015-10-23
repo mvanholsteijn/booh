@@ -53,7 +53,7 @@ release-minor: bump-minor tag release
 release-major: bump-major tag release
 
 check-release: 
-	@[ -n "$(git diff --summary -r $(RELEASE)" ] || (echo "current directory differs from tagged $(<.release)" ; exit 1) 
+	@[ -n "$$(git diff --summary -r $(RELEASE)" ] || (echo "current directory differs from tagged $(<.release)" ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
