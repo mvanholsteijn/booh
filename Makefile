@@ -30,11 +30,12 @@ bump-minor: tag
 bump-major:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		version=$$(printf "%d.0.0" $$(($$major + 1))) ; echo $$version )
+
 bump-major: tag
 	echo $(VERSION)
 
 tag: check-status
-	echo $(VERSION)
+	echo in tag $(VERSION)
 	@[ -n "$(git tag | grep "^$(VERSION)\$$")" ] || (echo "version already tagged in git" >&2 && exit 1) ; \
 	echo $(VERSION) > .release ;  \
 	git add .release ; \
