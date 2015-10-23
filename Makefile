@@ -11,15 +11,12 @@ build:
 
 release-patch: VERSION = $(shell . ../.make_support; nextPatchLevel)
 release-patch: tag
-	echo INFO: release $(VERSION) tagged.
 
 release-minor: VERSION = $(shell . ../.make_support; nextMinorLevel)
 release-minor: tag
-	echo INFO: release $(VERSION) tagged.
 
 release-minor: VERSION = $(shell . ../.make_support; nextMajorLevel)
 release-major: tag
-	echo INFO: release $(VERSION) tagged.
 
 tag: check-status
 	. ../.make_support ; tagExists || (echo "ERROR: version $(VERSION) already tagged in git" >&2 && exit 1) ; 
