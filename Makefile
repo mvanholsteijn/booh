@@ -1,5 +1,5 @@
 NAME=$(shell basename $(PWD))
-IMAGE=cargonauts/$(NAME)
+IMAGE=mvanholsteijn/$(NAME)
 VERSION=$(shell [ -z "$$(git status -s)" ] && cat .release || git describe --tag --long)
 BRANCH=$(shell git branch  | sed -n -e 's/^\* //p')
 
@@ -29,7 +29,7 @@ bump-major:
 		major=$$(echo $$version | cut -d. -f1); \
 		version=$$(printf "%d.0.0" $$(($$major + 1))) ; echo $$version )
 
-tag:
+tag: check-status
 	@[ -n "$(git tag | grep "^$(VERSION)\$$") ] || (echo "version already tagged in git" >&2 && exit 1) ; \
 	echo $(VERSION) > .release ;  \
 	git add .release ; \
@@ -50,6 +50,6 @@ check-release:
 	@[ -n "$(git diff --summary -r $(RELEASE)" ] || (echo "current directory differs from tagged $(<.release)" ; exit 1) 
 
 release: check-status check-release build
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):$(VERSION)
+	echo docker push $(IMAGE):$(VERSION)
+	echo docker push $(IMAGE):$(VERSION)
 
