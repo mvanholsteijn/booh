@@ -2,8 +2,10 @@ NAME=$(shell basename $(PWD))
 IMAGE=mvanholsteijn/$(NAME)
 BRANCH=$(shell git branch  | sed -n -e 's/^\* //p')
 
-VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep "^$$(<.release)\$$")" -a  -z "$$(git diff --shortstat -r $$(<.release))" ] && cat .release ||  echo $$(git describe --tag --long))
+VERSION=$(shell [ -z "$$(git status -s)" ] && [  -n "$$(git tag | grep "^$$(<.release)\$$")" ] &&  [ "$$(git diff --shortstat -r $$(<.release) 2> /dev/null)" ] && cat .release ||  echo $$(git describe --tag --long))
 
+test:
+	[ -z "$$(git status -s)" ] && [  -n "$$(git tag | grep "^$$(<.release)\$$")" ] &&  [ "$$(git diff --shortstat -r $$(<.release))" ] && cat .release ||  echo $$(git describe --tag --long)
 
 build: 
 	docker build --no-cache --force-rm -t $(IMAGE):$(VERSION) .
