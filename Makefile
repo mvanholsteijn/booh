@@ -36,7 +36,7 @@ bump-major: tag
 
 tag: check-status
 	echo in tag $(VERSION)
-	[ -n "$(git tag | grep "^$(VERSION)\$$")" ] || (echo "version already tagged in git" >&2 && exit 1) ; 
+	[ -n "$(shell git tag | grep "^$(VERSION)\$$")" ] || (echo "version already tagged in git" >&2 && exit 1) ; 
 	echo $(VERSION) > .release ;  
 	git add .release ; 
 	git commit -m "bumped to version $$version" ; 
