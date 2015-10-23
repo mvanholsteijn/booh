@@ -22,7 +22,7 @@ release-major: tag
 	echo INFO: release $(VERSION) tagged.
 
 tag: check-status
-	. ../.make_support ; ! tagExists || (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
+	. ../.make_support ; ! tagExists || (echo "ERROR: version $(VERSION) already tagged in git" >&2 && exit 1) ; 
 	echo $(VERSION) > .release 
 	git add .release 
 	git commit -m "bumped to version $(VERSION)" ; 
@@ -30,11 +30,11 @@ tag: check-status
 	git push origin $(BRANCH) --follow-tags 
 
 check-status:
-	. ../.make_support ; ! hasChanges || (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
+	@. ../.make_support ; ! hasChanges || (echo "ERROR: there are still outstanding changes" >&2 && exit 1) ; 
 
 check-release: 
-	. ../.make_support ; ! tagExists || (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
-	. ../.make_support ; ! differsFromRelease || (echo "ERROR: current directory differs from tagged $$(<.release). make release-[minor,major,patch]." ; exit 1) 
+	. ../.make_support ; ! tagExists || (echo "ERROR: version $(VERSION) not yet tagged in git" >&2 && exit 1) ; 
+	. ../.make_support ; ! differsFromRelease || (echo "ERROR: ERROR: current directory differs from tagged $$(<.release). make release-[minor,major,patch]." ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
