@@ -35,9 +35,10 @@ release-major: tag
 
 tag: check-status
 	git tag |  grep '^$(VERSION)\$$'
-	[ -n $(git tag | grep '^$(VERSION)\$$') ] && echo boo && (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
 	echo $(VERSION) > .release ;  
 	git add .release ; 
+	[ -n $(git tag | grep '^$(VERSION)\$$') ] && echo boo && (echo "version $(VERSION) already tagged in git" >&2 && exit 1) ; 
+	exit 1
 	git commit -m "bumped to version $(VERSION)" ; 
 	git tag $(VERSION) ;
 	git push origin $(BRANCH) --follow-tags 
