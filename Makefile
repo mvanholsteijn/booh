@@ -15,7 +15,7 @@ release-patch: tag
 release-minor: VERSION = $(shell . ../.make_support; nextMinorLevel)
 release-minor: tag
 
-release-minor: VERSION = $(shell . ../.make_support; nextMajorLevel)
+release-major: VERSION = $(shell . ../.make_support; nextMajorLevel)
 release-major: tag
 
 tag: check-status
