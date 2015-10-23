@@ -35,8 +35,7 @@ release-major: tag
 	echo $(VERSION)
 
 tag: check-status
-	echo in tag $(VERSION)
-	[ -n $(shell git tag | grep "^$(VERSION)\$$") ] || (echo "version already tagged in git" >&2 && exit 1) ; 
+	[ -n $(git tag | grep "^$(VERSION)\$$") ] && (echo "version already tagged in git" >&2 && exit 1) ; 
 	echo $(VERSION) > .release ;  
 	git add .release ; 
 	git commit -m "bumped to version $(VERSION)" ; 
@@ -44,12 +43,11 @@ tag: check-status
 	git push origin $(BRANCH) --follow-tags 
 
 check-status:
-	@[ -z "$$(git status -s)" ] || (echo "outstanding changes" ; git status -s && exit 1)
-
+	@[ -z "$$(git status -s)" ] || (echo "ERROR: outstanding changes" ; git status -s && exit 1)
 
 check-release: 
-	@[ -n "$$(git tag | grep '^$$(<.release)\$$')" ] || (echo "$$(<.release) not yet tagged." ; exit 1) 
-	@[ -n "$$(git diff --shortstat -r $$(<.release))" ] || (echo "current directory differs from tagged $$(<.release)" ; exit 1) 
+	@[ -n $$(git tag | grep '^$$(<.release)\$$') ] || (echo "ERROR: $$(<.release) not yet tagged. make release-[minor,major,patch]." ; exit 1) 
+	@[ -n "$$(git diff --shortstat -r $$(<.release))" ] && (echo "ERROR: current directory differs from tagged $$(<.release). make release-[minor,major,patch]." ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
