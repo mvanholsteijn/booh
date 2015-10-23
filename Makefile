@@ -2,7 +2,7 @@ NAME=$(shell basename $(PWD))
 IMAGE=mvanholsteijn/$(NAME)
 BRANCH=$(shell git branch  | sed -n -e 's/^\* //p')
 
-VERSION=$(shell [ -z "$$(git status -s)" ] && cat .release ||  $$(git describe --tag --long) )
+VERSION=$(shell [ -z "$$(git status -s)" -a  -n "$$(git tag | grep '^$$(<.release)\$$')" -a  -z "$$(git diff --summary -r $$(<.release))" ] && cat .release ||  $$(git describe --tag --long))
 
 
 build: 
@@ -24,14 +24,14 @@ bump-minor:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		minor=$$(echo $$version | cut -d. -f2); \
 		version=$$(printf "%d.%d.0" $$major $$(($$minor + 1))) ; echo $$version )
-bump-minor: tag
+release-minor: tag
 	echo $(VERSION)
 
-bump-major:  VERSION = $(shell version=$$(<.release); \
+release-major:  VERSION = $(shell version=$$(<.release); \
 		major=$$(echo $$version | cut -d. -f1); \
 		version=$$(printf "%d.0.0" $$(($$major + 1))) ; echo $$version )
 
-bump-major: tag
+release-major: tag
 	echo $(VERSION)
 
 tag: check-status
@@ -46,14 +46,10 @@ tag: check-status
 check-status:
 	@[ -z "$$(git status -s)" ] || (echo "outstanding changes" ; git status -s && exit 1)
 
-release-patch: bump-patch tag release
-
-release-minor: bump-minor tag release
-
-release-major: bump-major tag release
 
 check-release: 
-	@[ -n "$$(git diff --summary -r $(RELEASE)" ] || (echo "current directory differs from tagged $(<.release)" ; exit 1) 
+	@[ -n $$(git tag | grep '^$$(<.release)\$$') ] || (echo "$$(<.release) not yet tagged." ; exit 1) 
+	@[ -n $$(git diff --summary -r $$(<.release)) ] || (echo "current directory differs from tagged $$(<.release)" ; exit 1) 
 
 release: check-status check-release build
 	echo docker push $(IMAGE):$(VERSION)
